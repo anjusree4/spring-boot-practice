@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
         }
 
         @GetMapping("/multiply")
+        //Multiply
         public int multiply(@RequestParam int a, @RequestParam int b) {
             return calculatorservice.multiply(a, b);
         }
