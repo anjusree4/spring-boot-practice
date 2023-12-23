@@ -3,11 +3,14 @@ package com.anju.demo1.service;
 import com.anju.demo1.Model.Stock;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class StockService {
     private static final String API_KEY = "8fe99b7f31faeb8b9fe5539dfc0531f3"; // Replace with your API key
 
