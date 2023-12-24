@@ -9,30 +9,37 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 @Service
 public class StockService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StockService.class);
     private static final String API_KEY = "8fe99b7f31faeb8b9fe5539dfc0531f3"; // Replace with your API key
 
     public List<Stock> getCompanyData() throws IOException {
         List<Stock> stocks = new ArrayList<>();
-        ObjectMapper mapper = new ObjectMapper();
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String[] symbols = {"AAPL", "GOOGL", "MSFT"}; // Symbols for Apple, Google, and Microsoft
 
-        String[] symbols = {"AAPL", "GOOGL", "MSFT"}; // Symbols for Apple, Google, and Microsoft
+            for (String symbol : symbols) {
+                String apiUrl = "https://financialmodelingprep.com/api/v3/profile/" + symbol + "?apikey=" + API_KEY;
+                URL url = new URL(apiUrl);
 
-        for (String symbol : symbols) {
-            String apiUrl = "https://financialmodelingprep.com/api/v3/profile/" + symbol + "?apikey=" + API_KEY;
-            URL url = new URL(apiUrl);
+                JsonNode rootNode = mapper.readTree(url);
+                JsonNode node = rootNode.get(0);
 
-            JsonNode rootNode = mapper.readTree(url);
-            JsonNode node = rootNode.get(0);
+                Stock stock = new Stock();
+                stock.setCompanyName(node.get("companyName").asText());
+                stock.setSymbol(node.get("symbol").asText());
+                // Set other fields based on the API response
 
-            Stock stock = new Stock();
-            stock.setCompanyName(node.get("companyName").asText());
-            stock.setSymbol(node.get("symbol").asText());
-            // Set other fields based on the API response
-
-            stocks.add(stock);
+                stocks.add(stock);
+                LOGGER.info("Fetched data for symbol: {}", symbol);
+            }
+        }catch(IOException e)
+        {
+            LOGGER.error("Error fetching stock data:{}",e.getMessage());
         }
         return stocks;
     }
