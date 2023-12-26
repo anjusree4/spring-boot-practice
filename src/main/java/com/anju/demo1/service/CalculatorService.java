@@ -1,10 +1,12 @@
 package com.anju.demo1.service;
 
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
     @Service
+    @AllArgsConstructor
     public class CalculatorService {
         private static final Logger LOGGER = LoggerFactory.getLogger(CalculatorService.class);
         public int add(int a,int b)
