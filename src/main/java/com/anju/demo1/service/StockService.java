@@ -3,6 +3,7 @@ package com.anju.demo1.service;
 import com.anju.demo1.Model.Stock;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -11,19 +12,22 @@ import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 @Service
 public class StockService {
     private static final Logger LOGGER = LoggerFactory.getLogger(StockService.class);
-    private static final String API_KEY = "8fe99b7f31faeb8b9fe5539dfc0531f3"; // Replace with your API key
 
-    public List<Stock> getCompanyData() throws IOException {
+    @Value("${API_KEY}") // Replace YOUR_ENV_VARIABLE_NAME with the name of your environment variable
+    private String apiKey;
+
+    public List<Stock> getCompanyData() {
         List<Stock> stocks = new ArrayList<>();
         try {
             ObjectMapper mapper = new ObjectMapper();
             String[] symbols = {"AAPL", "GOOGL", "MSFT"}; // Symbols for Apple, Google, and Microsoft
 
             for (String symbol : symbols) {
-                String apiUrl = "https://financialmodelingprep.com/api/v3/profile/" + symbol + "?apikey=" + API_KEY;
+                String apiUrl = "https://financialmodelingprep.com/api/v3/profile/" + symbol + "?apikey=" + apiKey;
                 URL url = new URL(apiUrl);
 
                 JsonNode rootNode = mapper.readTree(url);
@@ -37,11 +41,9 @@ public class StockService {
                 stocks.add(stock);
                 LOGGER.info("Fetched data for symbol: {}", symbol);
             }
-        }catch(IOException e)
-        {
-            LOGGER.error("Error fetching stock data:{}",e.getMessage());
+        } catch (IOException e) {
+            LOGGER.error("Error fetching stock data:{}", e.getMessage());
         }
         return stocks;
     }
 }
-
